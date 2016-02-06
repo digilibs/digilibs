@@ -102,7 +102,7 @@ $.ajax({
     len = freqs.length;
     addHTML = "";
     for(r = 0; r < len; r++){
-      addHTML = addHTML + "<input data-version='" + r + "' class='names' name='nams'>";
+      addHTML = addHTML + "<input data-version='" + r + "' class='names' name='nams' placeholder='Add Name " + (r+1) + "'>";
     }
     addHTML = addHTML + "<input type='submit' class='submitbutton'>";
     $(".names").html(addHTML);
