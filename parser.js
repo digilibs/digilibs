@@ -1,7 +1,6 @@
-
 // jquery.xdomainajax.js  ------ from padolsey
 
-jQuery.ajax = (function(_ajax){
+$.ajax = (function(_ajax){
 	var protocol = location.protocol,
 		hostname = location.hostname,
 		exRegex = RegExp(protocol + '//' + hostname),
@@ -26,7 +25,7 @@ jQuery.ajax = (function(_ajax){
 				q: query.replace(
 					'{URL}',
 					url + (o.data ?
-						(/\?/.test(url) ? '&' : '?') + jQuery.param(o.data)
+						(/\?/.test(url) ? '&' : '?') + $.param(o.data)
 					: '')
 				),
 				format: 'xml'
@@ -56,65 +55,7 @@ jQuery.ajax = (function(_ajax){
 
 		return _ajax.apply(this, arguments);
 	};
-})(jQuery.ajax);
-
-var names = [];
-
-function frequencies(text) {
-	var words = text.split(" ");
-	var separator = ".";
-	var punctuation = [",", ".", "?", "!"]
-	var honorifics = ["Mr.", "Ms.", "Mrs.", "Dr.", "Mister", "Miss", "Missus"]
-	var frequencies = {};
-	var lastChar = function(word) {
-		return word[word.length - 1];
-	}
-	var isCapital = function(word) {
-		return "A" <= word[0] && word[0] <= "Z";
-	}
-	var extricate = function(word) {
-		if (lastChar(word) in punctuation)
-			return word.substring(0, word.length - 1);
-	}
-
-	for (var i = 0; i < words.length; i++){
-		// Obtain the capital phrase if extant
-		if (isCapital(words[i])) {
-			// Get name from words list.
-			name = "";
-			while (i < words.length && isCapital(words[i]))
-				name += " " + words[i++]
-
-			// Add name to frequencies dictionary
-			if ([name, separator] in frequencies)
-				frequencies[[name, separator]]++;
-			else
-				frequencies[[name, separator]] = 1;
-		}
-
-		if (words[i] != null && lastChar(words[i]) in punctuation)
-			separator = lastChar(words[i]);
-		else
-			separator = " ";
-	}
-	console.log(frequencies);
-	return frequencies;
-}
-
-function findnames(text) {
-
-}
-
-function parse(str){
-	start = str.indexOf('role="main"');
-	realstrt = str.indexOf('>', start);
-	end = str.indexOf('</div>', start);
-	str = str.substring(realstrt+1,end);
-	frequencies(str);
-	// str = findnames(str);
-	// console.log(end);
-	return str;
-}
+})($.ajax);
 
 $.ajax({
 	url: your_url,
@@ -127,3 +68,99 @@ $.ajax({
 		// then you can manipulate your text as you wish
 	}
 });
+
+function frequencies(text) {
+	var words = text.split(new RegExp(" |<|>", 'g'));
+	var separator = ".";
+	var punctuation = [",", ".", "?", "!"]
+	var honorifics = ["Mr.", "Ms.", "Mrs.", "Dr.", "Mister", "Miss", "Missus"]
+	var frequencies = {};
+	var lastChar = function(word) {
+		return word[word.length - 1];
+	}
+	var isCapital = function(word) {
+		return "A" <= word[0] && word[0] <= "Z";
+	}
+	var extricate = function(word) {
+		string = "";
+
+		// Get rid of apostrophes
+		if (string.split("'").length != 1 && string.split("'")[1].length < 3)
+			string = string.split("'")[0];
+
+		for (var i = 0; i < word.length; i++)
+			if (!(word[i] in punctuation) &&
+				'a' <= word[i].toLowerCase() &&
+				word[i].toLowerCase() <= 'z' ||
+				word[i] == "'")
+				string += word[i];
+				
+		return string;
+	}
+
+	for (var i = 0; i < words.length; i++){
+		// Obtain the capital phrase if extant
+		if (isCapital(words[i])) {
+			// Get name from words list.
+			name = "";
+			while (i < words.length
+				&& isCapital(words[i])
+				&& !(lastChar(words[i]) in punctuation))
+				name += " " + extricate(words[i++]);
+
+			// Add name to frequencies dictionary
+			if ([name, separator] in frequencies)
+				frequencies[[name, separator]] = frequencies[[name, separator]] + 1;
+			else
+				frequencies[[name, separator]] = 1;
+		}
+
+		if (words[i] != null && lastChar(words[i]) in punctuation)
+			separator = lastChar(words[i]);
+		else
+			separator = " ";
+	}
+	return frequencies;
+}
+
+function getFriendNames(number) {
+	var names = new Array(number);
+	for (var i; i < names.length; i++) {
+
+	}
+}
+
+function getNameMap(text) {
+	var storyNames = {};
+	var freqs = frequencies(text);
+	var size = 0;
+	for (name in freqs)
+		if (freqs[name] > 1) {
+			storyNames[name] = null;
+			size++;
+		}
+
+	var friendNames = getFriendNames(freqs.length);
+	var index = 0;
+	for (name in storyNames)
+		storyNames[name] = friendNames[index++];
+
+	return storyNames;
+}
+
+function replaceNames(text) {
+	for (name in getNameMap(text).keys())
+		text.replace(map, map[name]);
+}
+
+function parse(str){
+	var time1 = Date.now();
+	start = str.indexOf('role="main"');
+	realstrt = str.indexOf('>', start);
+	end = str.indexOf('</div>', start);
+	str = str.substring(realstrt+1,end);
+	console.log(frequencies(str));
+	// str = replaceNames(str);
+	console.log(Date.now() - time1);
+	return str;
+}
