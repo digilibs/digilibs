@@ -71,11 +71,40 @@ jQuery.ajax = (function(_ajax){
 })(jQuery.ajax);
 
 var names = [];
-    
-function findnames(str){
-    return str;
+
+function frequencies() {
+	var words = text.split(" ");
+	var separator = ".";
+	var punctuation = [",", ".", "?", "!"]
+	var honorifics = ["Mr.", "Miss", "Mrs.", "Dr.", "Mister", "Missus"]
+	var frequencies = {};
+
+	for (var i = 0; i < words.length; i++){
+		// Obtain the capital phrase if extant
+		if (isCapital(words[i])) {
+			// Get name from words list.
+			name = ""
+			while (i < words.length && isCapital(words[i]))
+				name += words[i++]
+
+			// Add name to frequencies dictionary
+			if ([name, separator] in frequencies) {
+				console.log("The name, separator pair is contained.")
+				frequencies[[name, separator]]++;
+			} else
+				frequencies[[name, separator]] = 1;
+		}
+
+		if (words[i][words[i].length - 1] in punctuation)
+			separator = words[i][words[i].length - 1];
+	}
+
+	return frequencies;
 }
-    
+
+function findnames(text) {
+}
+
 function parse(str){
     start = str.indexOf('role="main"');
     realstrt = str.indexOf('>', start);
