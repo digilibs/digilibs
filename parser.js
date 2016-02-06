@@ -1,8 +1,16 @@
 // jquery.xdomainajax.js  ------ from padolsey
 var counter = 0;
 var notFound = true;
-var urls = ['https://www.fanfiction.net/book/Harry-Potter/?&srt=4&g1=3&lan=1&r=102&len=11&s=2']
-var searchurl = urls[0];
+var urls = ['https://www.fanfiction.net/book/Harry-Potter/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+           'https://www.fanfiction.net/book/Lord-of-the-Rings/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/book/Gossip-Girl/?&srt=4&g1=3&lan=1&r=102&len=11&s=2', 'https://www.fanfiction.net/book/Twilight/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/movie/Avengers/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/movie/High-School-Musical/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/anime/Fullmetal-Alchemist/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/anime/Sailor-Moon/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/movie/Frozen/?&srt=4&g1=3&lan=1&r=102&len=11&s=2']
+var srhurlrand = Math.floor(Math.random()*10);
+var searchurl = urls[srhurlrand];
 
 $.ajax = (function(_ajax){
 	var protocol = location.protocol,
@@ -62,86 +70,30 @@ $.ajax = (function(_ajax){
 var searchnum = Math.floor(Math.random()*25 + 1);
 var ind;
 var indend;
+var strnum;
 
 
-
-var strnum =$.ajax({
-           url: searchurl,
-           type: 'GET',
-            dataType: 'xml',
-            async: false,
-            success: function(res) {
-                var srch = res.responseText;
-                for(var i = 0; i < searchnum; i++){
-                    ind = srch.indexOf("/s/", ind);
-                }
-                indend = srch.indexOf('"', ind);
-                srch = srch.substring(ind, indend);
-            console.log(srch);
-
-            return srch;
-            //$("#story").html(strnum);
-    }
-		// then you can manipulate your text as you wish
-	}).responseText;
-console.log(strnum);
-
-
-
-
-var your_url = 'https://www.fanfiction.net' + strnum;
-console.log(your_url);
-$.ajax = (function(_ajax){
-	var protocol = location.protocol,
-		hostname = location.hostname,
-		exRegex = RegExp(protocol + '//' + hostname),
-		YQL = 'http' + (/^https/.test(protocol)?'s':'') + '://query.yahooapis.com/v1/public/yql?callback=?',
-		query = 'select * from html where url="{URL}" and xpath="*"';
-	function isExternal(url) {
-		return !exRegex.test(url) && /:\/\//.test(url);
-	}
-	return function(o) {
-		var url = o.url;
-		if ( /get/i.test(o.type) && !/json/i.test(o.dataType) && isExternal(url) ) {
-			// Manipulate options so that JSONP-x request is made to YQL
-			o.url = YQL;
-			o.dataType = 'json';
-			o.data = {
-				q: query.replace(
-					'{URL}',
-					url + (o.data ?
-						(/\?/.test(url) ? '&' : '?') + $.param(o.data)
-					: '')
-				),
-				format: 'xml'
-			};
-			// Since it's a JSONP request
-			// complete === success
-			if (!o.success && o.complete) {
-				o.success = o.complete;
-				delete o.complete;
-			}
-			o.success = (function(_success){
-				return function(data) {
-					if (_success) {
-						// Fake XHR callback.
-						_success.call(this, {
-							responseText: data.results[0]
-								// YQL screws with <script>s
-								// Get rid of them
-								.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/gi, '')
-						}, 'success');
-					}
-				};
-			})(o.success);
-		}
-		return _ajax.apply(this, arguments);
-	};
-})($.ajax);
+function getStoryURL(searchnum){
 $.ajax({
-	url: your_url,
-	type: 'GET',
-	success: function(res) {
+    url: searchurl,
+    type: 'GET',
+    dataType: 'xml',
+
+    success: function(res) {
+        var srch = res.responseText;
+        for(var i = 0; i < searchnum; i++){
+            ind = srch.indexOf("/s/", ind);
+        }
+        indend = srch.indexOf('"', ind);
+        var strnum = srch.substring(ind, indend);
+        console.log(strnum);
+        your_url = 'https://www.fanfiction.net' + strnum;
+        console.log(your_url);
+
+        $.ajax({
+	   url: your_url,
+	   type: 'GET',
+	   success: function(res) {
 		var text = res.responseText;
 		// console.log(text);
 		text = parse(text);
@@ -149,6 +101,15 @@ $.ajax({
 		// then you can manipulate your text as you wish
 	}
 });
+        return strnum;    //$("#story").html(strnum);
+    }
+		// then you can manipulate your text as you wish
+	});
+}
+getStoryURL(searchnum);
+
+
+
 
 function frequencies(text) {
 	var words = text.split(new RegExp(" |<|>", 'g'));
