@@ -1,4 +1,8 @@
 // jquery.xdomainajax.js  ------ from padolsey
+var counter = 0;
+var notFound = true;
+var urls = ['https://www.fanfiction.net/book/Harry-Potter/?&srt=4&g1=3&lan=1&r=102&len=11&s=2']
+var searchurl = urls[0];
 
 $.ajax = (function(_ajax){
 	var protocol = location.protocol,
@@ -37,7 +41,6 @@ $.ajax = (function(_ajax){
 				o.success = o.complete;
 				delete o.complete;
 			}
-
 			o.success = (function(_success){
 				return function(data) {
 					if (_success) {
@@ -56,7 +59,85 @@ $.ajax = (function(_ajax){
 		return _ajax.apply(this, arguments);
 	};
 })($.ajax);
+var searchnum = Math.floor(Math.random()*25 + 1);
+var ind;
+var indend;
 
+
+
+var strnum =$.ajax({
+           url: searchurl,
+           type: 'GET',
+            dataType: 'xml',
+            async: false,
+            success: function(res) {
+                var srch = res.responseText;
+                for(var i = 0; i < searchnum; i++){
+                    ind = srch.indexOf("/s/", ind);
+                }
+                indend = srch.indexOf('"', ind);
+                srch = srch.substring(ind, indend);
+            console.log(srch);
+
+            return srch;
+            //$("#story").html(strnum);
+    }
+		// then you can manipulate your text as you wish
+	}).responseText;
+console.log(strnum);
+
+
+
+
+var your_url = 'https://www.fanfiction.net' + strnum;
+console.log(your_url);
+$.ajax = (function(_ajax){
+	var protocol = location.protocol,
+		hostname = location.hostname,
+		exRegex = RegExp(protocol + '//' + hostname),
+		YQL = 'http' + (/^https/.test(protocol)?'s':'') + '://query.yahooapis.com/v1/public/yql?callback=?',
+		query = 'select * from html where url="{URL}" and xpath="*"';
+	function isExternal(url) {
+		return !exRegex.test(url) && /:\/\//.test(url);
+	}
+	return function(o) {
+		var url = o.url;
+		if ( /get/i.test(o.type) && !/json/i.test(o.dataType) && isExternal(url) ) {
+			// Manipulate options so that JSONP-x request is made to YQL
+			o.url = YQL;
+			o.dataType = 'json';
+			o.data = {
+				q: query.replace(
+					'{URL}',
+					url + (o.data ?
+						(/\?/.test(url) ? '&' : '?') + $.param(o.data)
+					: '')
+				),
+				format: 'xml'
+			};
+			// Since it's a JSONP request
+			// complete === success
+			if (!o.success && o.complete) {
+				o.success = o.complete;
+				delete o.complete;
+			}
+			o.success = (function(_success){
+				return function(data) {
+					if (_success) {
+						// Fake XHR callback.
+						_success.call(this, {
+							responseText: data.results[0]
+								// YQL screws with <script>s
+								// Get rid of them
+								.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/gi, '')
+						}, 'success');
+					}
+				};
+			})(o.success);
+		}
+		return _ajax.apply(this, arguments);
+	};
+})($.ajax);
 $.ajax({
 	url: your_url,
 	type: 'GET',
