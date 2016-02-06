@@ -94,7 +94,7 @@ function frequencies(text) {
 				word[i].toLowerCase() <= 'z' ||
 				word[i] == "'")
 				string += word[i];
-				
+
 		return string;
 	}
 
@@ -123,7 +123,25 @@ function frequencies(text) {
 	return frequencies;
 }
 
+// MATTY, PLEASE COMPLETE THIS function
+// This function
 function getFriendNames(number) {
+	$.ajaxSetup({ cache: true });
+	$.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+		FB.init({
+			appId: 'MATTY, DO THIS PLZ',
+		version: 'v2.5' // or v2.0, v2.1, v2.2, v2.3
+	  });
+	  $('#loginbutton,#feedbutton').removeAttr('disabled');
+	  FB.getLoginStatus(updateStatusCallback);
+	});
+	$.ajax({
+		url: your_url,
+		type: 'GET',
+		success: function(res) {
+			var text = res.responseText;
+		}
+	});
 	var names = new Array(number);
 	for (var i; i < names.length; i++) {
 
