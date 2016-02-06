@@ -186,7 +186,7 @@ function getFriendNames(number) {
 	});
 	var names = new Array(number);
 	for (var i; i < names.length; i++) {
-
+        names.push("A");
 	}
 }
 
