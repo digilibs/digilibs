@@ -9,7 +9,7 @@ var urls = ['https://www.fanfiction.net/book/Harry-Potter/?&srt=4&g1=3&lan=1&r=1
             'https://www.fanfiction.net/anime/Fullmetal-Alchemist/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
             'https://www.fanfiction.net/anime/Sailor-Moon/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
             'https://www.fanfiction.net/movie/Frozen/?&srt=4&g1=3&lan=1&r=102&len=11&s=2']
-var srhurlrand = Math.floor(Math.random()*10);
+var srhurlrand = Math.floor(Math.random()*349)%10;
 var searchurl = urls[srhurlrand];
 
 $.ajax = (function(_ajax){
