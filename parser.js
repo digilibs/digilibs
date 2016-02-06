@@ -67,7 +67,7 @@ $.ajax = (function(_ajax){
 		return _ajax.apply(this, arguments);
 	};
 })($.ajax);
-var searchnum = Math.floor(Math.random()*25 + 1);
+var searchnum = Math.floor(Math.random()*179)%26;
 var ind;
 var indend;
 var strnum;
