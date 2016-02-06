@@ -2,7 +2,6 @@
 // jquery.xdomainajax.js  ------ from padolsey
 
 jQuery.ajax = (function(_ajax){
-
 	var protocol = location.protocol,
 		hostname = location.hostname,
 		exRegex = RegExp(protocol + '//' + hostname),
@@ -14,7 +13,6 @@ jQuery.ajax = (function(_ajax){
 	}
 
 	return function(o) {
-
 		var url = o.url;
 
 		if ( /get/i.test(o.type) && !/json/i.test(o.dataType) && isExternal(url) ) {
@@ -43,7 +41,6 @@ jQuery.ajax = (function(_ajax){
 
 			o.success = (function(_success){
 				return function(data) {
-
 					if (_success) {
 						// Fake XHR callback.
 						_success.call(this, {
@@ -53,16 +50,12 @@ jQuery.ajax = (function(_ajax){
 								.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/gi, '')
 						}, 'success');
 					}
-
 				};
 			})(o.success);
-
 		}
 
 		return _ajax.apply(this, arguments);
-
 	};
-
 })(jQuery.ajax);
 
 var names = [];
