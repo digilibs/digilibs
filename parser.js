@@ -598,31 +598,12 @@ function frequencies(text) {
 	return frequencies;
 }
 
-// MATTY, PLEASE COMPLETE THIS function
 // This function
-function getFriendNames(number) {
-	$.ajaxSetup({ cache: true });
-	$.getScript('//connect.facebook.net/en_US/sdk.js', function(){
-		FB.init({
-			appId: 'MATTY, DO THIS PLZ',
-		version: 'v2.5' // or v2.0, v2.1, v2.2, v2.3
-	  });
-	  $('#loginbutton,#feedbutton').removeAttr('disabled');
-	  FB.getLoginStatus(updateStatusCallback);
-	});
-	$.ajax({
-		url: your_url,
-		type: 'GET',
-		success: function(res) {
-			var text = res.responseText;
-		}
-	});
-	var names = new Array(number);
+function getNames(number) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "http://api.culpa.info/gold_nuggets", false);
 
-	for (var i = 0; i < names.length; i++)
-		names[i] = String(i);
-	return names;
-
+	xhr
 }
 
 function getNameMap(text) {
@@ -647,7 +628,7 @@ function getNameMap(text) {
 			size++;
 		}
 
-	var friendNames = getFriendNames(freqs.length);
+	var friendNames = getNames(freqs.length);
 	var index = 0;
 	for (name in storyNames)
 		storyNames[name] = friendNames[index++];
