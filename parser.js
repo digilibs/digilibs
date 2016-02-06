@@ -1,4 +1,16 @@
 // jquery.xdomainajax.js  ------ from padolsey
+var counter = 0;
+var notFound = true;
+var urls = ['https://www.fanfiction.net/book/Harry-Potter/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+           'https://www.fanfiction.net/book/Lord-of-the-Rings/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/book/Gossip-Girl/?&srt=4&g1=3&lan=1&r=102&len=11&s=2', 'https://www.fanfiction.net/book/Twilight/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/movie/Avengers/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/movie/High-School-Musical/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/anime/Fullmetal-Alchemist/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/anime/Sailor-Moon/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
+            'https://www.fanfiction.net/movie/Frozen/?&srt=4&g1=3&lan=1&r=102&len=11&s=2']
+var srhurlrand = Math.floor(Math.random()*10);
+var searchurl = urls[srhurlrand];
 
 $.ajax = (function(_ajax){
 	var protocol = location.protocol,
@@ -37,7 +49,6 @@ $.ajax = (function(_ajax){
 				o.success = o.complete;
 				delete o.complete;
 			}
-
 			o.success = (function(_success){
 				return function(data) {
 					if (_success) {
@@ -56,11 +67,33 @@ $.ajax = (function(_ajax){
 		return _ajax.apply(this, arguments);
 	};
 })($.ajax);
+var searchnum = Math.floor(Math.random()*25 + 1);
+var ind;
+var indend;
+var strnum;
 
+
+function getStoryURL(searchnum){
 $.ajax({
-	url: your_url,
-	type: 'GET',
-	success: function(res) {
+    url: searchurl,
+    type: 'GET',
+    dataType: 'xml',
+
+    success: function(res) {
+        var srch = res.responseText;
+        for(var i = 0; i < searchnum; i++){
+            ind = srch.indexOf("/s/", ind);
+        }
+        indend = srch.indexOf('"', ind);
+        var strnum = srch.substring(ind, indend);
+        console.log(strnum);
+        your_url = 'https://www.fanfiction.net' + strnum;
+        console.log(your_url);
+
+        $.ajax({
+	   url: your_url,
+	   type: 'GET',
+	   success: function(res) {
 		var text = res.responseText;
 		// console.log(text);
 		text = parse(text);
@@ -68,6 +101,15 @@ $.ajax({
 		// then you can manipulate your text as you wish
 	}
 });
+        return strnum;    //$("#story").html(strnum);
+    }
+		// then you can manipulate your text as you wish
+	});
+}
+getStoryURL(searchnum);
+
+
+
 
 // Stop words for names.
 var stop_words = new Array(
@@ -556,7 +598,25 @@ function frequencies(text) {
 	return frequencies;
 }
 
+// MATTY, PLEASE COMPLETE THIS function
+// This function
 function getFriendNames(number) {
+	$.ajaxSetup({ cache: true });
+	$.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+		FB.init({
+			appId: 'MATTY, DO THIS PLZ',
+		version: 'v2.5' // or v2.0, v2.1, v2.2, v2.3
+	  });
+	  $('#loginbutton,#feedbutton').removeAttr('disabled');
+	  FB.getLoginStatus(updateStatusCallback);
+	});
+	$.ajax({
+		url: your_url,
+		type: 'GET',
+		success: function(res) {
+			var text = res.responseText;
+		}
+	});
 	var names = new Array(number);
 	for (var i = 0; i < names.length; i++)
 		names[i] = String(i);
