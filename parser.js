@@ -71,8 +71,7 @@ var searchnum = Math.floor(Math.random()*25 + 1);
 var ind;
 var indend;
 var strnum;
-
-
+var storytext;
 function getStoryURL(searchnum){
 $.ajax({
     url: searchurl,
@@ -96,8 +95,22 @@ $.ajax({
 	   success: function(res) {
 		var text = res.responseText;
 		// console.log(text);
-		text = parse(text);
-		$("#story").html(text);
+		ret = parse(text);
+    storytext = ret[0];
+
+    var freqs = ret[1];
+    len = freqs.length;
+    addHTML = "";
+    for(r = 0; r < len; r++){
+      addHTML = addHTML + "<input data-version='" + r + "' class='names' name='nams'>";
+    }
+    addHTML = addHTML + "<input type='submit' class='submitbutton'>";
+    $(".names").html(addHTML);
+
+    //inputs = ["Mounika","Mathew","Kai Zhan", "Fred", "Bob"];
+    //str = swappero(str,freqs,inputs);
+
+		//$("#story").html(text);
 		// then you can manipulate your text as you wish
 	}
 });
@@ -610,18 +623,7 @@ function getNameMap(text) {
 	var storyNames = {};
 	var freqs = frequencies(text);
 	var size = 0;
-	var stopwords = $.get('/stopwords.txt',
-							function(result) {
-							    if (result == 'ON') {
-							        alert('ON');
-							    } else if (result == 'OFF') {
-							        alert('OFF');
-							    } else {
-							        alert(result);
-							    }
-							}
-					);
-	console.log(stopwords);
+
 	for (name in freqs)
 		if (true) {
 			storyNames[name] = null;
@@ -630,8 +632,6 @@ function getNameMap(text) {
 
 	var friendNames = getNames(freqs.length);
 	var index = 0;
-	for (name in storyNames)
-		storyNames[name] = friendNames[index++];
 
 	return storyNames;
 }
@@ -643,15 +643,60 @@ function replaceNames(text) {
 	return text;
 }
 
+function topfreqs(obj){
+  returnnames = [];
+  for(var propertyName in obj) {
+    if(obj[propertyName] > 2){
+      propertyName = propertyName.replace(",","");//remove dem commas
+      rg = new RegExp(" ","ig");
+      propertyName = propertyName.replace(rg,"");//remove extraneous space
+      if(stop_words.indexOf(propertyName.toLowerCase()) == -1){
+        returnnames.unshift(propertyName);
+      }
+    }
+  }
+
+  return returnnames;
+}
+
+function swappero(str,freqs,inputs){
+  console.log(freqs);
+  final_freqs = [];
+  for(k = 0; k < freqs.length; k++){
+    for(w = k+1; w < freqs.length; w++){
+      if(freqs[k].indexOf(freqs[w]) != -1){
+        freqs = freqs.splice(w, 1);
+      }
+    }
+  }
+  for(qwe = 0; qwe < freqs.length && qwe < inputs.length; qwe++){
+    rg = new RegExp(freqs[qwe],"ig");
+    str = str.replace(rg,inputs[qwe]);
+  }
+  return str;
+}
+
+
 function parse(str){
 	var time1 = Date.now();
 	start = str.indexOf('role="main"');
 	realstrt = str.indexOf('>', start);
 	end = str.indexOf('</div>', start);
 	str = str.substring(realstrt+1,end);
-	console.log(frequencies(str));
-	console.log(getNameMap(str));
-	str = replaceNames(str);
-	console.log(Date.now() - time1);
-	return str;
+	freqs = topfreqs(frequencies(str));
+
+	return [str,freqs];
 }
+
+$(document).ready(function(){
+  $(".form").submit(function( event ) {
+    event.preventDefault();
+    var nams = $("input[name='nams']")
+              .map(function(){return $(this).val();}).get();
+    storytext = swappero(storytext,freqs,nams);
+    $("#story").html(storytext);
+
+  });
+
+
+})
