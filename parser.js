@@ -1,8 +1,7 @@
 // jquery.xdomainajax.js  ------ from padolsey
 var counter = 0;
 var notFound = true;
-<<<<<<< HEAD
-var urls = ['https://www.fanfiction.net/book/Harry-Potter/?&srt=4&g1=3&lan=1&r=4&len=11&s=2',
+var urls = [
            'https://www.fanfiction.net/book/Lord-of-the-Rings/?&srt=4&g1=3&lan=1&r=4&len=11&s=2',
             'https://www.fanfiction.net/book/Gossip-Girl/?&srt=4&g1=3&lan=1&r=4&len=11&s=2', 'https://www.fanfiction.net/book/Twilight/?&srt=4&g1=3&lan=1&r=4&len=11&s=2',
             'https://www.fanfiction.net/movie/Avengers/?&srt=4&g1=3&lan=1&r=4&len=11&s=2',
@@ -11,18 +10,6 @@ var urls = ['https://www.fanfiction.net/book/Harry-Potter/?&srt=4&g1=3&lan=1&r=4
             'https://www.fanfiction.net/anime/Sailor-Moon/?&srt=4&g1=3&lan=1&r=4&len=11&s=2',
             'https://www.fanfiction.net/movie/Frozen/?&srt=4&g1=3&lan=1&r=4&len=11&s=2']
 var srhurlrand = Math.floor(Math.random()*10);
-=======
-var urls = ['https://www.fanfiction.net/book/Harry-Potter/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
-           'https://www.fanfiction.net/book/Lord-of-the-Rings/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
-            'https://www.fanfiction.net/book/Gossip-Girl/?&srt=4&g1=3&lan=1&r=102&len=11&s=2', 'https://www.fanfiction.net/book/Twilight/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
-            'https://www.fanfiction.net/movie/Avengers/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
-            'https://www.fanfiction.net/movie/High-School-Musical/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
-            'https://www.fanfiction.net/anime/Fullmetal-Alchemist/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
-            'https://www.fanfiction.net/anime/Sailor-Moon/?&srt=4&g1=3&lan=1&r=102&len=11&s=2',
-            'https://www.fanfiction.net/movie/Frozen/?&srt=4&g1=3&lan=1&r=102&len=11&s=2']
-var srhurlrand = Math.floor(Math.random()*349)%10;
->>>>>>> 3619a50310324d78bed7132955067b48a153136f
-var searchurl = urls[srhurlrand];
 
 $.ajax = (function(_ajax){
 	var protocol = location.protocol,
