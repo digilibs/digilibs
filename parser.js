@@ -10,6 +10,7 @@ var urls = [
             'https://www.fanfiction.net/anime/Sailor-Moon/?&srt=4&g1=3&lan=1&r=4&len=11&s=2',
             'https://www.fanfiction.net/movie/Frozen/?&srt=4&g1=3&lan=1&r=4&len=11&s=2']
 var srhurlrand = Math.floor(Math.random()*10);
+var searchurl = urls[srhurlrand];
 
 $.ajax = (function(_ajax){
 	var protocol = location.protocol,
